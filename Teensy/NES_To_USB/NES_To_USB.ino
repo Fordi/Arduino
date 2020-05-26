@@ -22,7 +22,7 @@
 #define NES_DAT 4
 
 #ifndef DPAD_AXIS
-  // hat is degrees clockwise from up in 45 degree increments.
+  // Joystick.hat accepts degrees clockwise from `up`, in 45 degree increments, or -1 for centered.
   int hat_map[] = [
     /* RLDU */
     /* 0000 */ -1,
@@ -43,6 +43,8 @@
     /* 1111 */ -1 // ignore all
   ];
 #endif
+// USB buttons for: A, B, Select, Start  
+int[] button_map = [2, 3,      9,    10];
 
 // Pulse a pin (clock or latch)
 void pulse(uint8_t pin) {
@@ -67,7 +69,7 @@ void loop() {
   pulse(NES_LCH);
   // A, B, Select, Start
   for (int x = 0; x < 4; x++) { // read in the 4 controller buttons that were latched into the 4021
-    Joystick.button(x + 1, digitalRead(NES_DAT));
+    Joystick.button(button_map[x], digitalRead(NES_DAT));
     pulse(NES_CLK);
   }
   uint8_t dpad = 0;

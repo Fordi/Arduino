@@ -159,7 +159,7 @@ void loop() {
   // B, Y, Select, Start for SNES
   // `button_map` handles this.
   for (int x = 0; x < 4; x++) { // read in the 4 controller buttons
-    Joystick.button(button_map[mode][x], digitalRead(NES_DAT));
+    Joystick.button(button_map[mode][x], !digitalRead(NES_DAT));
     pulse(NES_CLK);
   }
   uint8_t dpad = 0;
@@ -171,7 +171,7 @@ void loop() {
   if (mode == MODE_SNES) {
     // A, X, L, R for SNES
     for (int x = 4; x < 8; x++) { // read in the remaining 4 controller buttons
-      Joystick.button(button_map[mode][x], digitalRead(NES_DAT));
+      Joystick.button(button_map[mode][x], !digitalRead(NES_DAT));
       pulse(NES_CLK);
     }
   }

@@ -22,6 +22,7 @@
 #define NES_DAT 4
 
 #ifndef DPAD_AXIS
+  // hat is degrees clockwise from up in 45 degree increments.
   int hat_map[] = [
     /* RLDU */
     /* 0000 */ -1,

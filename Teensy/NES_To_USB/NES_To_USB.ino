@@ -71,7 +71,7 @@ void loop() {
     pulse(NES_CLK);
   }
   uint8_t dpad = 0;
-  // Up, Down, Left, Right (`dpad` has bits 4..0 = Right, Left, Down, Up)
+  // Up, Down, Left, Right (`dpad` has bits 3..0 = Right, Left, Down, Up)
   for (int x = 0; x < 4; x++) { // read in the 4 switches for the d-pad state.
     bitWrite(dpad, x, !digitalRead(nesData));
   }

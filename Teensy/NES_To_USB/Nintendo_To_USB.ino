@@ -128,6 +128,11 @@ void pulse(uint8_t pin) {
   digitalWrite(pin, LOW);
   delayMicroseconds(SHIFT_DELAY);
 }
+uint8_t shift() {
+  uint8_t d = !digitalRead(NES_DAT);
+  pulse(NES_CLK);
+  return d;
+}
 
 void setup() {
   // configure pins
@@ -159,30 +164,26 @@ void loop() {
   // B, Y, Select, Start for SNES
   // `button_map` handles this.
   for (int x = 0; x < 4; x++) { // read in the 4 controller buttons
-    Joystick.button(button_map[mode][x], !digitalRead(NES_DAT));
-    pulse(NES_CLK);
+    Joystick.button(button_map[mode][x], shift());
   }
   uint8_t dpad = 0;
-  // Up, Down, Left, Right (`dpad` has bits 3..0 = Right, Left, Down, Up)
-  for (int x = 0; x < 4; x++) { // read in the 4 switches for the d-pad state.
-    bitWrite(dpad, x, !digitalRead(nesData));
-    pulse(NES_CLK);
-  }
-  if (mode == MODE_SNES) {
-    // A, X, L, R for SNES
-    for (int x = 4; x < 8; x++) { // read in the remaining 4 controller buttons
-      Joystick.button(button_map[mode][x], !digitalRead(NES_DAT));
-      pulse(NES_CLK);
-    }
-  }
-  if (dpad_mode == MODE_AXIS) {
-    Joystick.X(512 - (bitRead(dpad, 2) * 512 + bitRead(dpad, 3) * 511));
-    Joystick.Y(512 - (bitRead(dpad, 0) * 512 + bitRead(dpad, 1) * 511));
-    Joystick.hat(-1);
+  if (dpad_mode === MODE_AIXS) {
+    Joystick.Y(512 - (shift() * 512 + shift() * 511));
+    Joystick.X(512 - (shift() * 512 + shift() * 511));
   } else {
+    // Up, Down, Left, Right (`dpad` has bits 3..0 = Right, Left, Down, Up)
+    for (int x = 0; x < 4; x++) { // read in the 4 switches for the d-pad state.
+      bitWrite(dpad, x, shift());
+    }
     Joystick.X(512);
     Joystick.Y(512);
     Joystick.hat(hat_map[dpad]);
+  }  
+  if (mode == MODE_SNES) {
+    // A, X, L, R for SNES
+    for (int x = 4; x < 8; x++) { // read in the remaining 4 controller buttons
+      Joystick.button(button_map[mode][x], shift());
+    }
   }
   Joystick.send_now();
 }
